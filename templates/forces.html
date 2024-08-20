@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        .person-header {
+            font-weight: bold;
+            background-color: #e0e0e0;
+        }
+    </style>
+    <h1>{% block title %} List of Forces {% endblock %}</h1>
+    <form class="force_form" id="force_form" method="POST">
+        <select name="force_select" id="force_select" class="Input">
+            {% for force in forces_list %}
+            <option value="{{ force.id }}" {%if force.id == force_id %} selected {% endif %}>{{ force.name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <br>
+    {% if force_results %}
+    <h2>Force Details</h2>
+    <table border="1">
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+        {% for key, value in force_results.items() %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>
+                {% if key == "url" %}
+                    <a href="{{ value }}">{{ value }}</a>
+                {% elif key == "engagement_methods" and value is iterable %}
+                    <table border="1" style="margin-top: 10px;">
+                        <tr>
+                            <th>Type</th>
+                            <th>Title</th>
+                            <th>URL</th>
+                        </tr>
+                        {% for method in value %}
+                        <tr>
+                            <td>{{ method.type }}</td>
+                            <td>{{ method.title }}</td>
+                            <td><a href="{{ method.url }}">{{ method.url }}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    {{ value | safe }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    <br>
+    {% if officer_results %}
+    <h2>Senior Officers Details</h2>
+    {% for officer in officer_results %}
+    <table>
+        <tr class="person-header">
+            <th colspan="2">{{ officer.name | safe }}</th>
+        </tr>
+        {% for key, value in officer.items() %}
+            {% if key != 'name' %}
+            <tr>
+                <th>{{ key.replace('_', ' ').title() }}</th>
+                <td>{{ value | safe }}</td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+    {% endfor %}
+    </table>
+    {% endif %}
+    <script>
+        document.getElementById('force_select').addEventListener('change', function() {
+            document.getElementById('force_form').submit();
+        });
+    </script>
+{% endblock %}
