@@ -10,6 +10,7 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
     
+# Forces page
 @app.route("/forces", methods=['GET', 'POST'])
 def forces(methods=["POST"]):
     
@@ -19,14 +20,14 @@ def forces(methods=["POST"]):
     
     url = "https://data.police.uk/api/forces"
     forces_list = query(url=url)
-    print(forces_list)
+
     if request.method == "POST":
         force_id = request.form.get("force_select").strip()
         url += f"/{force_id}"
         force_results = query(url=url)
         url += f"/people"
         officer_results = query(url=url)
-    print(force_id)
+    
     return render_template(
         "forces.html",
         forces_list=forces_list,
@@ -37,4 +38,4 @@ def forces(methods=["POST"]):
 
 # Flask initialisation
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
