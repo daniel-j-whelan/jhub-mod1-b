@@ -14,19 +14,17 @@ def index():
 @app.route("/forces", methods=['GET', 'POST'])
 def forces(methods=["POST"]):
     
-    force_id = None
-    force_results = None
-    officer_results = None
+    force_id = "avon-and-somerset"
     
     url = "https://data.police.uk/api/forces"
     forces_list = query(url=url)
 
     if request.method == "POST":
         force_id = request.form.get("force_select").strip()
-        url += f"/{force_id}"
-        force_results = query(url=url)
-        url += f"/people"
-        officer_results = query(url=url)
+    url += f"/{force_id}"
+    force_results = query(url=url)
+    url += f"/people"
+    officer_results = query(url=url)
     
     return render_template(
         "forces.html",
